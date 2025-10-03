@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>맞짱 사이트 — 테스트용 (안전 중심)</title>
+  <title>맞짱 사이트 </title>
   <style>
     :root{
       --bg:#0f1724; --card:#0b1220; --accent:#ff6b6b; --muted:#9aa4b2;
@@ -42,7 +42,7 @@
   <main class="wrap" role="main" aria-labelledby="pageTitle">
     <section class="left" aria-label="등록 폼">
       <h1 id="pageTitle">맞짱 사이트 — 테스트용 (안전 중심)</h1>
-      <p class="lead">이 서비스는 **합의된 연습·스파링·경쟁(스포츠/토론 등)**을 위한 연결용 테스트 템플릿입니다. 실전 폭력·불법 행위 목적의 사용은 허용되지 않습니다. 사용 전 반드시 상대 동의와 안전 규칙을 확인하세요.</p>
+      <p class="lead">이 서비스는 맞짱 뜰 사람을 구하는 사이트입니다.</p>
 
       <label for="name">이름 (필수)</label>
       <input id="name" placeholder="예: 박진우" />
@@ -52,13 +52,13 @@
 
       <div class="row">
         <div class="small">
-          <label for="sport">종류</label>
+          <label for="sport">사용 무술</label>
           <select id="sport">
-            <option>스파링(복싱)</option>
-            <option>스파링(MMA)</option>
-            <option>태권도/격투기 연습</option>
-            <option>대회(토너먼트)</option>
-            <option>토론/비교(물리적 충돌 아님)</option>
+            <option>복싱</option>
+            <option>MMA</option>
+            <option>태권도</option>
+            <option>공파술</option>
+            <option>개싸움</option>
             <option>기타(기재)</option>
           </select>
         </div>
@@ -74,14 +74,14 @@
       </div>
 
       <label for="loc">활동지역(선택)</label>
-      <input id="loc" placeholder="예: 대전, CBNU 근처 체육관" />
+      <input id="loc" placeholder="예: 니하" />
 
       <label for="avail">가능 시간 / 메모</label>
       <textarea id="avail" rows="3" placeholder="주말 오전 / 헬스장 소속: OOO 체육관 / 장비 보유 등"></textarea>
 
       <div style="margin-top:12px">
         <input id="agree" type="checkbox" />
-        <label for="agree" style="display:inline-block; margin-left:8px; color:var(--muted); font-size:13px">안전 규칙 및 면책 조항을 읽었고, 상대와 합의 후 동의된 방식으로만 만남을 진행합니다. (필수)</label>
+        <label for="agree" style="display:inline-block; margin-left:8px; color:var(--muted); font-size:13px">패자는 말이 없습니. (필수)</label>
       </div>
 
       <div style="display:flex; gap:10px; align-items:center;">
@@ -90,16 +90,16 @@
       </div>
 
       <div class="notice" role="status">
-        테스트용 템플릿입니다. 실제 운영 시에는 신원 확인, 보험/면책, 시설 안전 확인, 응급연락처 수집, 근거 법률 자문을 반드시 진행하세요.
+        합의는 ㅈ밥이나 하는 겁니.
       </div>
 
       <div class="card" style="margin-top:12px">
-        <strong>개인정보 처리 안내(간단)</strong>
-        <p class="meta">이 페이지는 로컬(브라우저)에서만 동작하는 데모입니다. 배포 시 개인정보 저장 방식(백엔드, 암호화, 개인정보처리방침 등)을 반드시 마련하세요.</p>
+        <strong>개인정보 안내(간단)</strong>
+        <p class="meta">상남자는 보안 따위 없습니.</p>
       </div>
 
       <footer>
-        배포 팁: 이 파일 하나로 GitHub Pages 또는 Netlify(Drag & Drop)로 바로 호스팅 가능합니다.
+        배포 팁: 제작자한테 100만원 주시면 가능합니다.
       </footer>
     </section>
 
@@ -214,5 +214,6 @@
   </script>
 </body>
 </html>
+
 
 
