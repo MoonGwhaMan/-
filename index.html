@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>맞짱 사이트 - 상대 찾기</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d0d0d; /* Dark background */
+            color: #ffffff;
+            line-height: 1.6;
+        }
+        /* Custom scrollbar for better dark theme look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #ef4444; /* Red thumb */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937; /* Dark track */
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 sm:p-8 flex items-center justify-center">
+
+    <div id="app-container" class="w-full max-w-4xl bg-gray-900 shadow-2xl rounded-2xl p-6 sm:p-10 border border-red-700/50">
+        
+        <!-- Header & Title -->
+        <header class="text-center mb-10 border-b border-red-700 pb-4">
+            <h1 class="text-5xl sm:text-6xl font-black uppercase tracking-widest text-red-500 mb-2">
+                💥 맞짱 사이트 🥊
+            </h1>
+            <p class="text-lg text-gray-300">
+                가장 센 친구에게 도전장을 내밀고 상대를 찾아보세요.
+            </p>
+            <!-- 사용자 ID 정보는 친구들 장난용으로 사용되지 않도록 UI에서 제거함 -->
+        </header>
+
+        <!-- Challenge Form -->
+        <section class="mb-10 p-6 bg-gray-800 rounded-xl shadow-inner border border-red-600/30">
+            <h2 class="text-3xl font-bold mb-6 text-red-400">📝 도전장 작성 (나의 정보)</h2>
+            <form id="challenge-form">
+                
+                <!-- 이름 -->
+                <div class="mb-4">
+                    <label for="name" class="block text-sm font-medium text-gray-300 mb-2">닉네임 / 이름 (Name)</label>
+                    <input type="text" id="name" name="name" required
+                           placeholder="가장 강한 이름을 입력하세요 (예: 불꽃주먹)"
+                           class="w-full px-4 py-3 bg-gray-700 border border-red-600/50 rounded-lg focus:ring-red-500 focus:border-red-500 text-white placeholder-gray-400 transition duration-300">
+                </div>
+                
+                <!-- 사용 무술 (추가됨) -->
+                <div class="mb-4">
+                    <label for="fightingStyle" class="block text-sm font-medium text-gray-300 mb-2">👊 사용 무술 (Fighting Style)</label>
+                    <input type="text" id="fightingStyle" name="fightingStyle" required
+                           placeholder="자신 있는 무술을 입력하세요 (예: 태권도, 복싱, 길거리 싸움)"
+                           class="w-full px-4 py-3 bg-gray-700 border border-red-600/50 rounded-lg focus:ring-red-500 focus:border-red-500 text-white placeholder-gray-400 transition duration-300">
+                </div>
+
+                <!-- 가능 시간대 (추가됨) -->
+                <div class="mb-4">
+                    <label for="availableTime" class="block text-sm font-medium text-gray-300 mb-2">⏰ 가능 시간대 (Available Time)</label>
+                    <input type="text" id="availableTime" name="availableTime" required
+                           placeholder="언제 맞짱 뜰 수 있나요? (예: 평일 저녁 7시 이후, 주말 오후)"
+                           class="w-full px-4 py-3 bg-gray-700 border border-red-600/50 rounded-lg focus:ring-red-500 focus:border-red-500 text-white placeholder-gray-400 transition duration-300">
+                </div>
+
+                <!-- 전화번호 -->
+                <div class="mb-6">
+                    <label for="phone" class="block text-sm font-medium text-gray-300 mb-2">📞 연락처 / 전화번호 (Phone Number)</label>
+                    <input type="tel" id="phone" name="phone" required
+                           placeholder="연락 가능한 번호를 입력하세요 (예: 010-1234-5678)"
+                           class="w-full px-4 py-3 bg-gray-700 border border-red-600/50 rounded-lg focus:ring-red-500 focus:border-red-500 text-white placeholder-gray-400 transition duration-300">
+                </div>
+
+                <button type="submit" id="submit-button"
+                        class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-red-500/50 transition duration-300 transform hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span id="button-text">🔥 도전장 제출! 최강자를 가려보자!</span>
+                    <span id="loading-spinner" class="hidden h-5 w-5 border-2 border-white border-t-red-300 rounded-full animate-spin ml-2"></span>
+                </button>
+            </form>
+            <div id="message-box" class="mt-4 text-center p-3 rounded-lg hidden"></div>
+        </section>
+
+        <!-- Current Challenges List -->
+        <section>
+            <h2 class="text-3xl font-bold mb-6 text-red-400 border-b border-gray-700 pb-2">📜 현재 등록된 도전 목록</h2>
+            <div id="challenges-list" class="space-y-4">
+                <p class="text-gray-500 text-center py-4">도전 목록을 불러오는 중...</p>
+            </div>
+            <div id="empty-state" class="hidden text-center py-8 bg-gray-800 rounded-xl mt-4">
+                <p class="text-xl text-gray-400">아직 등록된 도전장이 없습니다. 첫 번째 도전을 시작하세요!</p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global Firebase variables
+        let app;
+        let db;
+        let auth;
+        let userId = null;
+        let appId = 'default-app-id';
+
+        // UI Elements
+        const form = document.getElementById('challenge-form');
+        const messageBox = document.getElementById('message-box');
+        const challengesList = document.getElementById('challenges-list');
+        const emptyState = document.getElementById('empty-state');
+        const submitButton = document.getElementById('submit-button');
+        const buttonText = document.getElementById('button-text');
+        const loadingSpinner = document.getElementById('loading-spinner');
+
+        // Helper function for UI state management
+        const toggleLoading = (isLoading) => {
+            submitButton.disabled = isLoading;
+            if (isLoading) {
+                buttonText.textContent = '도전장 등록 중...';
+                loadingSpinner.classList.remove('hidden');
+            } else {
+                buttonText.textContent = '🔥 도전장 제출! 최강자를 가려보자!';
+                loadingSpinner.classList.add('hidden');
+            }
+        };
+
+        const showMessage = (text, isSuccess) => {
+            messageBox.textContent = text;
+            messageBox.classList.remove('hidden', 'bg-red-900/50', 'bg-green-900/50');
+            if (isSuccess) {
+                messageBox.classList.add('bg-green-900/50', 'text-green-300');
+            } else {
+                messageBox.classList.add('bg-red-900/50', 'text-red-300');
+            }
+            setTimeout(() => {
+                messageBox.classList.add('hidden');
+            }, 5000);
+        };
+
+        // --- Firebase Initialization and Authentication ---
+        const initializeFirebase = async () => {
+            try {
+                // Check and parse environment variables
+                const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+                appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+                if (!firebaseConfig) {
+                    console.error("Firebase config is not available.");
+                    return;
+                }
+
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                
+                // Set Firestore log level for debugging
+                setLogLevel('Debug');
+
+                // Sign in with custom token or anonymously
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                // Auth state listener
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        console.log("Firebase Auth State Changed. User ID (Hidden in UI):", userId);
+                        // Once authenticated, start listening for data
+                        setupChallengeListener();
+                    } else {
+                        userId = null;
+                        console.log("Firebase Auth State Changed. No user signed in.");
+                    }
+                });
+
+            } catch (error) {
+                console.error("Firebase Initialization Error:", error);
+            }
+        };
+
+        // --- Firestore Operations ---
+
+        // 1. Get the correct collection path for public data
+        const getChallengesCollectionRef = () => {
+            // Public collection path: /artifacts/{appId}/public/data/challenges
+            if (!db) return null;
+            return collection(db, `artifacts/${appId}/public/data/challenges`);
+        };
+
+        // 2. Form Submission Handler
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!db || !userId) {
+                showMessage("데이터베이스 연결 또는 사용자 인증 대기 중입니다.", false);
+                return;
+            }
+
+            const nameInput = document.getElementById('name').value.trim();
+            const phoneInput = document.getElementById('phone').value.trim();
+            const fightingStyleInput = document.getElementById('fightingStyle').value.trim();
+            const availableTimeInput = document.getElementById('availableTime').value.trim();
+
+            if (!nameInput || !phoneInput || !fightingStyleInput || !availableTimeInput) {
+                showMessage("모든 정보를 빠짐없이 입력해야 합니다.", false);
+                return;
+            }
+            
+            toggleLoading(true);
+
+            try {
+                const challengesRef = getChallengesCollectionRef();
+                if (!challengesRef) throw new Error("도전장 컬렉션 참조를 가져올 수 없습니다.");
+
+                const challengeData = {
+                    name: nameInput,
+                    phoneNumber: phoneInput, // 연락 수단
+                    fightingStyle: fightingStyleInput, // 사용 무술
+                    availableTime: availableTimeInput, // 가능 시간대
+                    userId: userId, // 누가 등록했는지 식별하는 용도 (UI에는 미표시)
+                    timestamp: serverTimestamp() 
+                };
+
+                await addDoc(challengesRef, challengeData);
+
+                showMessage("✅ 도전장 등록 완료! 이제 친구들에게 네 이름을 알릴 시간이야!", true);
+                form.reset(); // Clear the form on successful submission
+            } catch (error) {
+                console.error("도전장 등록 실패:", error);
+                showMessage(`도전장 등록 중 오류 발생: ${error.message}`, false);
+            } finally {
+                toggleLoading(false);
+            }
+        });
+
+
+        // 3. Real-time Listener for Challenges
+        const setupChallengeListener = () => {
+            const challengesRef = getChallengesCollectionRef();
+            if (!challengesRef) return;
+            
+            // Query for challenges (no orderBy used to avoid requiring indexes)
+            const q = query(challengesRef);
+
+            // Set up real-time listener
+            onSnapshot(q, (snapshot) => {
+                if (snapshot.empty) {
+                    challengesList.innerHTML = '';
+                    emptyState.classList.remove('hidden');
+                    return;
+                }
+
+                emptyState.classList.add('hidden');
+                let htmlContent = '';
+                
+                // Get documents and sort them by timestamp locally (newest first)
+                const challenges = [];
+                snapshot.forEach(doc => {
+                    challenges.push({ id: doc.id, ...doc.data() });
+                });
+                
+                // Sort by timestamp if available, otherwise by name
+                challenges.sort((a, b) => {
+                    const timeA = a.timestamp?.toMillis() || 0;
+                    const timeB = b.timestamp?.toMillis() || 0;
+                    return timeB - timeA; // Descending order (newest first)
+                });
+
+                challenges.forEach(challenge => {
+                    // Format timestamp
+                    const date = challenge.timestamp ? challenge.timestamp.toDate() : new Date();
+                    const timeString = date.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: true });
+                    const dateString = date.toLocaleDateString('ko-KR', { year: '2-digit', month: '2-digit', day: '2-digit' });
+                    
+                    const isCurrentUser = challenge.userId === userId;
+                    
+                    htmlContent += `
+                        <div class="p-4 rounded-xl border-l-4 ${isCurrentUser ? 'border-red-500 bg-gray-700/50 shadow-md' : 'border-gray-500 bg-gray-800/50'}" title="${isCurrentUser ? '이건 내 도전장이다!' : '친구가 등록한 도전장'}">
+                            <div class="flex justify-between items-start">
+                                <p class="text-2xl font-black ${isCurrentUser ? 'text-red-300' : 'text-white'}">
+                                    ${challenge.name} <span class="text-xs font-normal ${isCurrentUser ? 'bg-red-500 px-2 py-0.5 rounded-full text-black' : 'text-gray-400'}">${isCurrentUser ? '💥 나야 나! 💥' : '도전자'}</span>
+                                </p>
+                                <p class="text-sm text-gray-400">${dateString} ${timeString}</p>
+                            </div>
+                            
+                            <!-- 추가된 필드들 표시 -->
+                            <div class="mt-3 space-y-1">
+                                <p class="text-gray-200">
+                                    <span class="font-bold text-red-400">👊 무술:</span> ${challenge.fightingStyle || '미기재'}
+                                </p>
+                                <p class="text-gray-200">
+                                    <span class="font-bold text-red-400">⏰ 시간대:</span> ${challenge.availableTime || '미기재'}
+                                </p>
+                            </div>
+
+                            <p class="text-gray-300 mt-3 p-2 border-t border-gray-700">
+                                <span class="font-bold text-red-400">📞 연락처:</span> ${challenge.phoneNumber}
+                            </p>
+                            <!-- 사용자 ID는 숨김 처리 -->
+                        </div>
+                    `;
+                });
+
+                challengesList.innerHTML = htmlContent;
+
+            }, (error) => {
+                console.error("실시간 데이터 수신 오류:", error);
+                challengesList.innerHTML = `<p class="text-red-400 text-center py-4">도전 목록 로드 중 오류 발생: ${error.message}</p>`;
+            });
+        };
+
+        // Start the application
+        window.onload = initializeFirebase;
+
+    </script>
+</body>
+</html>
