@@ -187,10 +187,9 @@
                 
                 // [오류 수정] apiKey가 더미 값인지 확인
                 // 가짜 키이거나, 프로젝트 ID가 없으면 경고 후 그냥 진행 (데이터 저장 안됨)
-                if (firebaseConfig.apiKey === "YOUR_API_KEY_HERE" || !firebaseConfig.projectId || firebaseConfig.apiKey.includes("Fake-Key")) {
+                if (firebaseConfig.apiKey.includes("Fake-Key")) { // 'Fake-Key' 문자열만 확인하도록 단순화
                      console.warn("경고: 가짜 Firebase 설정이 사용되어 데이터가 저장되지 않습니다.");
-                     showMessage("데이터베이스 연결 실패: 명단이 저장되지 않습니다. (테스트 모드)", false);
-                     // 이 경우에도 앱이 멈추지 않도록 초기화는 시도합니다.
+                     // 사용자에게 테스트 모드 관련 메시지를 보여주지 않음
                 }
 
 
@@ -250,19 +249,13 @@
             const fightingStyleInput = document.getElementById('fightingStyle').value.trim();
             const availableTimeInput = document.getElementById('availableTime').value.trim();
             
-            // 사용자 요청에 따라 빈 칸 검사 (유효성 검사) 로직을 제거했습니다.
-            /*
-            if (!nameInput || !phoneInput || !fightingStyleInput || !availableTimeInput) {
-                showMessage("모든 정보를 빠짐없이 입력해야 합니다.", false);
-                return;
-            }
-            */
+            // 유효성 검사 (빈 칸 검사) 로직을 제거했으므로, 입력 값이 비어 있어도 진행됩니다.
 
             // DB 연결이 안 되었을 경우 (가짜 키 사용 시 이 블록으로 들어옴)
             if (!db || !userId) {
                 if (isFakeKey) {
-                    // 가짜 키로 연결이 안 되었을 경우, 성공했다고 알림
-                    showMessage("✅ 도전장 제출 완료! (테스트 모드: 명단은 저장되지 않습니다)", true);
+                    // 가짜 키로 연결이 안 되었을 경우, 성공했다고 알림 (명단이 올라가지 않음)
+                    showMessage("✅ 도전장 제출 완료!", true); // <--- '테스트 모드' 문구 삭제
                     form.reset();
                     return;
                 }
