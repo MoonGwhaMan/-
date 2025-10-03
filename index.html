@@ -51,7 +51,7 @@
                 <!-- 이름 -->
                 <div class="mb-4">
                     <label for="name" class="block text-sm font-medium text-gray-300 mb-2">닉네임 / 이름 (Name)</label>
-                    <input type="text" id="name" name="name" required
+                    <input type="text" id="name" name="name"
                            placeholder="가장 강한 이름을 입력하세요 (예: 불꽃주먹)"
                            class="w-full px-4 py-3 bg-gray-700 border border-red-600/50 rounded-lg focus:ring-red-500 focus:border-red-500 text-white placeholder-gray-400 transition duration-300">
                 </div>
@@ -59,7 +59,7 @@
                 <!-- 사용 무술 (추가됨) -->
                 <div class="mb-4">
                     <label for="fightingStyle" class="block text-sm font-medium text-gray-300 mb-2">👊 사용 무술 (Fighting Style)</label>
-                    <input type="text" id="fightingStyle" name="fightingStyle" required
+                    <input type="text" id="fightingStyle" name="fightingStyle"
                            placeholder="자신 있는 무술을 입력하세요 (예: 태권도, 복싱, 길거리 싸움)"
                            class="w-full px-4 py-3 bg-gray-700 border border-red-600/50 rounded-lg focus:ring-red-500 focus:border-red-500 text-white placeholder-gray-400 transition duration-300">
                 </div>
@@ -67,7 +67,7 @@
                 <!-- 가능 시간대 (추가됨) -->
                 <div class="mb-4">
                     <label for="availableTime" class="block text-sm font-medium text-gray-300 mb-2">⏰ 가능 시간대 (Available Time)</label>
-                    <input type="text" id="availableTime" name="availableTime" required
+                    <input type="text" id="availableTime" name="availableTime"
                            placeholder="언제 맞짱 뜰 수 있나요? (예: 평일 저녁 7시 이후, 주말 오후)"
                            class="w-full px-4 py-3 bg-gray-700 border border-red-600/50 rounded-lg focus:ring-red-500 focus:border-red-500 text-white placeholder-gray-400 transition duration-300">
                 </div>
@@ -75,7 +75,7 @@
                 <!-- 전화번호 -->
                 <div class="mb-6">
                     <label for="phone" class="block text-sm font-medium text-gray-300 mb-2">📞 연락처 / 전화번호 (Phone Number)</label>
-                    <input type="tel" id="phone" name="phone" required
+                    <input type="tel" id="phone" name="phone"
                            placeholder="연락 가능한 번호를 입력하세요 (예: 010-1234-5678)"
                            class="w-full px-4 py-3 bg-gray-700 border border-red-600/50 rounded-lg focus:ring-red-500 focus:border-red-500 text-white placeholder-gray-400 transition duration-300">
                 </div>
@@ -244,27 +244,34 @@
             // 가짜 키일 경우, DB 연결이 안 되었어도 성공 메시지를 보여줍니다.
             const isFakeKey = MANUAL_FIREBASE_CONFIG.apiKey.includes("Fake-Key");
 
-            if (!db || !userId) {
-                if (isFakeKey) {
-                    // 가짜 키로 연결이 안 되었을 경우
-                    showMessage("✅ 도전장 제출 완료! (테스트 모드: 명단은 저장되지 않습니다)", true);
-                    form.reset();
-                    return;
-                }
-                showMessage("데이터베이스 연결 또는 사용자 인증 대기 중입니다.", false);
-                return;
-            }
-
+            // 모든 필드의 값을 가져옵니다.
             const nameInput = document.getElementById('name').value.trim();
             const phoneInput = document.getElementById('phone').value.trim();
             const fightingStyleInput = document.getElementById('fightingStyle').value.trim();
             const availableTimeInput = document.getElementById('availableTime').value.trim();
-
+            
+            // 사용자 요청에 따라 빈 칸 검사 (유효성 검사) 로직을 제거했습니다.
+            /*
             if (!nameInput || !phoneInput || !fightingStyleInput || !availableTimeInput) {
                 showMessage("모든 정보를 빠짐없이 입력해야 합니다.", false);
                 return;
             }
-            
+            */
+
+            // DB 연결이 안 되었을 경우 (가짜 키 사용 시 이 블록으로 들어옴)
+            if (!db || !userId) {
+                if (isFakeKey) {
+                    // 가짜 키로 연결이 안 되었을 경우, 성공했다고 알림
+                    showMessage("✅ 도전장 제출 완료! (테스트 모드: 명단은 저장되지 않습니다)", true);
+                    form.reset();
+                    return;
+                }
+                // 실제 키를 썼는데 DB 연결이 안 되었을 경우
+                showMessage("데이터베이스 연결 또는 사용자 인증 대기 중입니다.", false);
+                return;
+            }
+
+            // DB 연결이 정상일 경우 (이 코드는 GitHub에서는 실행되지 않습니다.)
             toggleLoading(true);
 
             try {
